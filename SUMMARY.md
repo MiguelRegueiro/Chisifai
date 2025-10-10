@@ -50,6 +50,19 @@ El sistema garantiza el control de calidad durante la distribución, asegurando 
 
 ---
 
+### **5. Frontend React** - *Nuevo*
+
+* ✅ **Dashboard Principal**: Visualización en tiempo real de todas las entregas
+* ✅ **Mapa Interactivo**: Mostrando ubicación de entregas con marcadores
+* ✅ **Gráficos de Telemetría**: Temperatura, humedad y vibración en tiempo real
+* ✅ **Panel de Alertas**: Alertas activas con detalles
+* ✅ **Lista de Entregas**: Tabla con estado de todas las entregas activas
+* ✅ **Detalles de Entrega**: Vista detallada de cada entrega individual
+* ✅ **WebSocket**: Actualizaciones en tiempo real sin recarga de página
+* ✅ **Diseño responsive**: Compatible con escritorio y dispositivos móviles
+
+---
+
 ### **5. Seguridad**
 
 * ✅ Análisis de seguridad **CIA (Confidencialidad, Integridad, Disponibilidad)** documentado.
@@ -86,6 +99,7 @@ El sistema garantiza el control de calidad durante la distribución, asegurando 
 * **Ingesta:** API FastAPI con validación y endpoints de telemetría y alertas.
 * **Procesamiento:** Node-RED con detección de anomalías con estado.
 * **Almacenamiento:** PostgreSQL con tablas de telemetría y alertas.
+* **Frontend:** React Dashboard con visualización en tiempo real
 * **Visualización:** Tablero de **Metabase** con KPIs operativos y de calidad.
 
 ---
@@ -95,6 +109,7 @@ El sistema garantiza el control de calidad durante la distribución, asegurando 
 * `devices/chisifai_publisher.py` – Publicador MQTT de datos ambientales.
 * `flows/nodered_chisifai_parallel.json` – Flujo Node-RED con detección mejorada.
 * `services/ingest_api/app/main.py` – API de ingesta con endpoint de alertas.
+* `services/ui/` – Código fuente del frontend React con dashboard completo
 * `dashboards/chisifai_kpi_queries.sql` – Consultas SQL para indicadores de desempeño.
 * `dashboards/README.md` – Guía de configuración de dashboard.
 * `security/CIA_minithreats.md` – Análisis de seguridad CIA.
@@ -114,5 +129,8 @@ El sistema garantiza el control de calidad durante la distribución, asegurando 
 * ✅ **Reduce reclamaciones y devoluciones** por problemas de calidad.
 * ✅ **Refuerza la confianza del cliente** mediante trazabilidad y control.
 * ✅ **Habilita decisiones basadas en datos**, mejorando la eficiencia y sostenibilidad.
+* ✅ **Visualización en tiempo real** con dashboard React intuitivo para monitoreo proactivo
+* ✅ **Toma de decisiones rápida** basada en datos con visualizaciones en vivo
+* ✅ **Monitoreo centralizado** de todas las entregas desde un panel único
 
 

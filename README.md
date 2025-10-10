@@ -25,7 +25,16 @@ Chisifai es una empresa premium de entrega de tartas de queso que requiere un mo
 - Tablas separadas para telemetría y alertas
 - Indexación adecuada para consultas eficientes
 
-### 5. Visualización
+### 5. **FRONTEND REACT** - *Nuevo*
+- **Dashboard Principal**: Visualización en tiempo real de todas las entregas
+- **Mapa Interactivo**: Mostrando ubicación de entregas con marcadores
+- **Gráficos de Telemetría**: Temperatura, humedad y vibración en tiempo real
+- **Panel de Alertas**: Alertas activas con detalles
+- **Lista de Entregas**: Tabla con estado de todas las entregas activas
+- **Detalles de Entrega**: Vista detallada de cada entrega individual
+- **WebSocket**: Actualizaciones en tiempo real sin recarga de página
+
+### 6. Visualización
 - Panel de Metabase para monitorear condiciones de entrega de tartas de queso
 - KPIs que rastrean SLA de calidad, tiempo de detección de alertas y tasas de falsos positivos
 
@@ -45,6 +54,24 @@ Chisifai es una empresa premium de entrega de tartas de queso que requiere un mo
 - Generación automática de alertas para condiciones anómalas
 - Clasificación de tipos de alertas para identificación rápida
 
+### Sistema Avanzado de Alertas
+- Detección de anomalía sostenida: alertas activadas solo después de N lecturas consecutivas que exceden los umbrales
+- Umbrales configurables:
+  - Temperatura > 8°C sostenida durante 3 lecturas
+  - Humedad > 85% sostenida durante 3 lecturas
+  - Vibración > 3.0G sostenida durante 3 lecturas
+- Generación automática de alertas para condiciones anómalas
+- Clasificación de tipos de alertas para identificación rápida
+
+### **NUEVO: Frontend React** 
+- **Visualización en tiempo real**: Panel de control con mapas, gráficos y alertas
+- **Mapa interactivo**: Localización de entregas activas con marcadores
+- **Telemetría visual**: Gráficos de temperatura, humedad y vibración
+- **Detección instantánea**: Alertas en tiempo real con notificaciones
+- **Historial de entregas**: Vista detallada de datos históricos
+- **Diseño responsive**: Compatible con escritorio y dispositivos móviles
+- **WebSocket integrado**: Actualizaciones en vivo sin recarga de página
+
 ### KPIs de Negocio
 1. **SLA de Calidad de Entrega**: % de tartas de queso mantenidas en condiciones óptimas
 2. **Tiempo de Detección de Alertas**: Tiempo promedio para detectar anomalías
@@ -56,6 +83,7 @@ El sistema sigue una arquitectura moderna de canalización de datos:
 - **Ingesta**: API Gateway recibiendo y validando datos
 - **Procesamiento**: Análisis en tiempo real con detección de alertas con estado
 - **Almacenamiento**: Almacenamiento persistente en PostgreSQL
+- **Frontend**: React Dashboard con visualización en tiempo real
 - **Visualización**: Panel de inteligencia de negocios
 
 ## Seguridad (CIA)
@@ -85,6 +113,14 @@ cd devices
 source .venv/bin/activate  # Activar el entorno virtual creado anteriormente
 python chisifai_publisher.py --broker localhost --topic sensors/cheesecake/CHISIFAI-001 --hz 0.5 --cheesecake-id CHISIFAI-001
 ```
+
+### Acceso al Frontend React
+- **URL**: `http://localhost:3001`
+- **Dashboard completo**: Visualización en tiempo real de todas las entregas
+- **Mapa interactivo**: Ubicación de entregas con estado visual
+- **Gráficos de telemetría**: Evolución de temperatura, humedad y vibración
+- **Panel de alertas**: Alertas activas con detalles
+- **Historial de entregas**: Vista detallada de cada entrega
 
 ### Configuración del Panel de Metabase
 1. Accede a Metabase en `http://localhost:3000`

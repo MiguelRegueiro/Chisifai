@@ -39,6 +39,9 @@ services:
       - ingest_api
     environment:
       - TZ=UTC
+    volumes:
+      - ./data:/data
+      - ../flows:/flows
 
   n8n:
     image: n8nio/n8n:latest
@@ -60,6 +63,21 @@ services:
     ports: ["8001:8001"]
     depends_on:
       - postgres
+
+  chisifai_ui:
+    build: 
+      context: ../services/ui
+    container_name: t2-chisifai-ui
+    ports: 
+      - "3001:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8001
+      - REACT_APP_SOCKET_URL=ws://localhost:8001
+    volumes:
+      - ../services/ui:/app
+      - /app/node_modules
+    depends_on:
+      - ingest_api
 
 volumes:
   pgdata:

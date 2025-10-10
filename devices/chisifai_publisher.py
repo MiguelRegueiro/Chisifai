@@ -53,7 +53,7 @@ def main():
 
             data = {
                 "part_id": args.cheesecake_id,
-                "ts": datetime.utcnow().isoformat() + "Z",
+                "ts": datetime.utcnow().isoformat(),
                 "temp": temp,
                 "humidity": humidity,
                 "vibration": vibration

@@ -1,6 +1,6 @@
--- Motify Car Parts Monitoring - Database Schema
+-- Chisifai Cheese Cake Delivery Monitoring - Database Schema
 
--- Telemetry table to store sensor data from car parts
+-- Telemetry table to store sensor data from cheese cake deliveries
 CREATE TABLE IF NOT EXISTS telemetry (
     id SERIAL PRIMARY KEY,
     part_id VARCHAR(50) NOT NULL,
@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS telemetry (
     temp DECIMAL(5,2) NOT NULL,
     humidity DECIMAL(5,2) NOT NULL,
     vibration DECIMAL(5,2) NOT NULL,
+    lat DECIMAL(8,6) DEFAULT 0.0,  -- Latitude for location tracking
+    lng DECIMAL(9,6) DEFAULT 0.0,  -- Longitude for location tracking
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
