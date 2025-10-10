@@ -1,0 +1,163 @@
+[
+  {
+    "id": "tab1",
+    "type": "tab",
+    "label": "GreenDelivery Parallel",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "mqttcfg1",
+    "type": "mqtt-broker",
+    "name": "Mosquitto (docker)",
+    "broker": "mosquitto",
+    "port": "1883",
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "clean": true
+  },
+  {
+    "id": "mqtt_in",
+    "type": "mqtt in",
+    "z": "tab1",
+    "name": "sensors/parcel/#",
+    "topic": "sensors/parcel/#",
+    "qos": "0",
+    "datatype": "auto-detect",
+    "broker": "mqttcfg1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "x": 160,
+    "y": 120,
+    "wires": [
+      [
+        "json1"
+      ]
+    ]
+  },
+  {
+    "id": "json1",
+    "type": "json",
+    "z": "tab1",
+    "name": "Parse JSON",
+    "property": "payload",
+    "action": "",
+    "pretty": false,
+    "x": 360,
+    "y": 120,
+    "wires": [
+      [
+        "func_validate"
+      ]
+    ]
+  },
+  {
+    "id": "func_validate",
+    "type": "function",
+    "z": "tab1",
+    "name": "Validate & normalize",
+    "func": "const p = msg.payload || {};\nif(typeof p.temp !== 'number' || typeof p.g_force !== 'number' || !p.parcel_id || !p.ts){\n    node.warn('invalid payload');\n    return null;\n}\nmsg.headers = { 'Content-Type': 'application/json' };\nmsg.payload = {\n    parcel_id: String(p.parcel_id),\n    ts: new Date(p.ts).toISOString(),\n    temp: Number(p.temp),\n    g_force: Number(p.g_force)\n};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 580,
+    "y": 120,
+    "wires": [
+      [
+        "http_ingest_api",
+        "http_n8n",
+        "debug_in"
+      ]
+    ]
+  },
+  {
+    "id": "http_ingest_api",
+    "type": "http request",
+    "z": "tab1",
+    "name": "POST \u2192 ingest_api",
+    "method": "POST",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "http://ingest_api:8001/ingest/telemetry",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "authType": "",
+    "senderr": false,
+    "x": 830,
+    "y": 80,
+    "wires": [
+      [
+        "debug_out_api"
+      ]
+    ]
+  },
+  {
+    "id": "http_n8n",
+    "type": "http request",
+    "z": "tab1",
+    "name": "POST \u2192 n8n webhook",
+    "method": "POST",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "http://n8n:5678/webhook/telemetry",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "authType": "",
+    "senderr": false,
+    "x": 840,
+    "y": 160,
+    "wires": [
+      [
+        "debug_out_n8n"
+      ]
+    ]
+  },
+  {
+    "id": "debug_in",
+    "type": "debug",
+    "z": "tab1",
+    "name": "payload\u2192API+n8n",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 850,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "debug_out_api",
+    "type": "debug",
+    "z": "tab1",
+    "name": "ingest_api response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 1070,
+    "y": 80,
+    "wires": []
+  },
+  {
+    "id": "debug_out_n8n",
+    "type": "debug",
+    "z": "tab1",
+    "name": "n8n response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 1050,
+    "y": 160,
+    "wires": []
+  }
+]

@@ -1,5 +1,4 @@
-# Chisifai
-### Sistema de Monitoreo de Entrega de Tartas de Queso Chisifai
+# Sistema de Monitoreo de Entrega de Tarta de Queso Chisifai
 
 ## Resumen
 Chisifai es una empresa premium de entrega de tartas de queso que requiere un monitoreo cuidadoso de las condiciones ambientales durante el transporte para garantizar la calidad del producto. Este sistema proporciona monitoreo en tiempo real de los niveles de temperatura, humedad y vibración durante la entrega de tartas de queso para prevenir la putrefacción y daños.
