@@ -1,0 +1,107 @@
+# Proyecto Chisifai - Monitoreo de Envíos de Tartas de Queso
+
+## Descripción del Proyecto
+Chisifai es una startup que se especializa en la entrega de tartas de queso de alta calidad. Para mantener la frescura y calidad de sus productos, es crucial monitorear la cadena de frío en tiempo real, detectar posibles incidentes (como fallos de refrigeración o manipulación brusca) y notificar inmediatamente a los encargados. Este proyecto implementa un pipeline de datos de extremo a extremo para cumplir con este objetivo.
+
+## Tecnologías Elegidas
+
+### 1. Simulador IoT (Fuente de Datos en el Borde):
+- **Lenguaje:** Python
+- **Librerías:** `paho-mqtt` para MQTT, `requests` para HTTPS (opcional), `faker` o `random` para datos creíbles.
+- **Protocolo:** MQTT (más eficiente para IoT, aunque HTTPS también es viable).
+- **Broker MQTT:** Eclipse Mosquitto (puede ser público como test.mosquitto.org o local con Docker).
+
+### 2. Ingesta y Procesamiento (Nube):
+- **Herramienta de Flujo (Low-Code):** Node-RED (por su facilidad de uso y visualización del pipeline).
+- **Componentes en Node-RED:**
+  - Nodo MQTT In: suscribirse al tópico (e.g., `chisifai/trackers/telemetry`).
+  - Nodo de Función (JavaScript): validar JSON y verificar estado para detección de incidentes sostenidos.
+  - Nodo HTTP Request: llamar a la API de ingesta, con lógica de reintento y backoff exponencial.
+
+### 3. Almacenamiento (Nube):
+- **API de Ingesta:** FastAPI (Python).
+- **Base de Datos:** PostgreSQL (por su naturaleza relacional y robustez para datos estructurados).
+- **Conexión API-BD:** SQLAlchemy (ORM para Python).
+- **Variables de Entorno:** `python-dotenv` para manejo seguro de credenciales.
+
+### 4. Acción y Visualización:
+- **Notificación:** Webhook de Discord o Slack (por su facilidad de configuración).
+- **Frontend (Dashboard):** React.js.
+- **Backend para Dashboard:** FastAPI (misma API que ingesta o una separada para consulta).
+- **Visualización:** Librerías como Chart.js o D3.js para gráficos, y Leaflet para mapas.
+
+## Pasos a Seguir
+
+### Semana 1: Del Sensor al Primer Dato
+1.  **Crear el Simulador MQTT:**
+    - Escribir un script en Python que genere datos de telemetría (temperatura, fuerza_g, id_paquete, timestamp) cada 2 segundos.
+    - Publicar estos datos en un tópico MQTT específico (e.g., `chisifai/trackers/telemetry`).
+2.  **Configurar Node-RED:**
+    - Instalar y configurar Node-RED.
+    - Crear un flujo que se suscriba al tópico MQTT.
+    - Validar la estructura y tipos de datos del JSON recibido.
+    - Llamar a la API de ingesta con reintento y backoff.
+3.  **Implementar la API y Base de Datos:**
+    - Levantar una instancia de PostgreSQL (usando Docker).
+    - Crear la API de ingesta con FastAPI y SQLAlchemy.
+    - Definir el modelo de datos para almacenar telemetría y alertas.
+    - Probar la cadena completa: Simulador -> MQTT -> Node-RED -> API -> PostgreSQL.
+
+### Semana 2: Arquitectura con Propósito
+4.  **Diseñar Diagrama de Arquitectura:**
+    - Crear un diagrama de bloques con las tecnologías usadas (Edge, Broker MQTT, Node-RED, API, BD, Frontend, Notificaciones).
+    - Etiquetar los componentes con rasgos NIST de Cloud Computing.
+5.  **Documentar Decisiones Arquitectónicas:**
+    - Justificar cada tecnología elegida, su propósito, ventajas y trade-offs.
+    - Crear fichas de decisión para cada componente principal.
+
+### Semana 3: De Dato a Decisión
+6.  **Implementar Lógica de Detección de Incidentes:**
+    - Modificar el flujo de Node-RED para implementar la regla de "N eventos sostenidos". Por ejemplo: alerta si `temperatura > 6°C` O `fuerza_g > 2.5G` durante 5 eventos consecutivos para un mismo id_paquete.
+    - Usar variables de contexto o una caché (Redis opcional) para mantener el estado.
+7.  **Evaluar la Lógica:**
+    - Leer el archivo `analytics/labels.csv` (simulado o proporcionado).
+    - Crear un script en Python que simule la lógica de detección y compare con las etiquetas reales.
+    - Calcular Precisión, Recall y F1-Score.
+8.  **Justificar la Métrica de Negocio:**
+    - Decidir si optimizar para Precisión (minimizar falsos positivos) o Recall (minimizar falsos negativos) basándose en el impacto de cada tipo de error en Chisifai.
+
+### Semana 4: KPIs que Importan
+9.  **Definir e Implementar KPIs:**
+    - **KPI 1:** % de Envíos en SLA (sin alertas críticas).
+    - **KPI 2:** Tiempo Medio de Detección (MTTD).
+    - **KPI 3:** % de Falsos Positivos (requiere una tabla adicional para marcar alertas como falsas).
+    - Escribir consultas SQL para calcular estos KPIs.
+10. **Crear el Dashboard con React:**
+    - Inicializar un proyecto React.
+    - Conectarlo a la API de consulta (FastAPI) para obtener datos de telemetría y KPIs.
+    - Visualizar los KPIs, datos en tiempo real (gráficos y mapa) y alertas.
+11. **Configurar Notificaciones:**
+    - Programar en Node-RED o en la API la llamada a un webhook de Discord/Slack cuando se detecta una alerta.
+
+### Semana 5: Seguridad por Diseño + Boss Fight
+12. **Aplicar Seguridad CIA:**
+    - **Confidencialidad:** Mover todas las credenciales y tokens a un archivo `.env` y usar `python-dotenv`. Asegurarse de que `.env` esté en `.gitignore`.
+    - **Integridad:** Validar tipos y rangos de datos en la API FastAPI (Pydantic models).
+    - **Disponibilidad:** Asegurar que la lógica de reintento y backoff en Node-RED funcione correctamente.
+13. **Preparar la "Boss Fight":**
+    - Probar que el sistema maneje la interrupción de la base de datos sin perder datos.
+    - Verificar que se acumulan y procesan correctamente tras la recuperación.
+14. **Realizar la Demo Final:**
+    - Mostrar todo el pipeline en funcionamiento.
+    - Demostrar la captura de datos, la detección de incidentes, la generación de alertas y la visualización en el dashboard.
+    - Ejecutar la "Boss Fight" y demostrar resiliencia.
+
+## Entregables
+- `diagrams/arquitectura_T2.png`
+- `flows/node-red-flow.json` (exportado de Node-RED)
+- `db/ddl.sql` (definiciones de tablas)
+- `dashboards/metabase_export.json` o capturas del dashboard React
+- `security/CIA_minithreats.md`
+- `doc/Informe_T2_EquipoX.pdf`
+- `video/URL.txt` (vínculo al video de demo)
+
+## Notas
+- La métrica F1-Score es clave para evaluar la efectividad del sistema de detección.
+- El dashboard debe ser intuitivo y mostrar claramente los KPIs y el estado de los envíos.
+- La seguridad debe ser considerada desde el principio, no como una adición final.

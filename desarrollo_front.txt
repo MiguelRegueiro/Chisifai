@@ -1,0 +1,100 @@
+# Desarrollo del Frontend (Dashboard) para Chisifai
+
+## Descripción del Proyecto
+Chisifai es una startup que se especializa en la entrega de tartas de queso de alta calidad. El frontend (dashboard) tiene como objetivo proporcionar una interfaz visual clara y en tiempo real para monitorear los envíos, mostrando datos de telemetría (como temperatura y ubicación), alertas detectadas y KPIs de negocio clave como el porcentaje de envíos en SLA, el tiempo medio de detección de incidentes y el porcentaje de falsos positivos.
+
+## Tecnologías
+*   **Framework Principal:** React.js
+*   **Lenguaje:** JavaScript o TypeScript (decisión del equipo)
+*   **Estilos:** Bootstrap CSS o Tailwind CSS (opcional, para un diseño limpio y responsive)
+*   **Gráficos y Mapas:** Chart.js / D3.js para gráficos de telemetría, Leaflet para mapas de ubicación.
+*   **Comunicación con API:** `fetch` o `axios` para consumir los endpoints de la API FastAPI.
+
+## Pasos a Seguir para el Desarrollo
+
+### Fase 1: Configuración Inicial del Proyecto
+1.  **Crear el Proyecto React:**
+    *   Utilizar `create-react-app` o un gestor de paquetes como `vite` para inicializar el proyecto.
+    *   Decidir si se usará JavaScript o TypeScript.
+    *   Configurar estructura básica de carpetas (e.g., `src/components`, `src/pages`, `src/utils`, `src/styles`).
+
+2.  **Instalar Dependencias Esenciales:**
+    *   `axios` (opcional, alternativa a `fetch`).
+    *   Librerías para gráficos y mapas: `chart.js`, `react-chartjs-2` (o `recharts`), `leaflet`, `react-leaflet`.
+    *   (Opcional) Bootstrap o Tailwind CSS.
+
+3.  **Estructura de Componentes Básica:**
+    *   Crear componentes de alto nivel: `App.js`, `Dashboard.js`, `Header.js`, `Sidebar.js` (opcional).
+    *   Definir el layout general de la aplicación.
+
+### Fase 2: Consumo de la API y Gestión de Estado
+4.  **Configurar Servicio de API:**
+    *   Crear un módulo o hook personalizado (e.g., `apiService.js`) para encapsular las llamadas HTTP a la API FastAPI.
+    *   Definir funciones para obtener datos de telemetría, KPIs y alertas (e.g., `fetchTelemetryData`, `fetchKPIs`, `fetchAlerts`).
+
+5.  **Gestión de Estado:**
+    *   Decidir si usar `useState`, `useReducer` y `useContext` de React para el estado local/global.
+    *   (Opcional) Evaluar si es necesario usar una librería de manejo de estado externa como Redux Toolkit, aunque para este alcance puede ser innecesario.
+
+6.  **Componente para Datos en Tiempo Real:**
+    *   Crear un componente (e.g., `TelemetryFeed.js`) que haga polling periódico (cada X segundos) a la API para obtener los últimos datos de telemetría de los envíos activos.
+
+### Fase 3: Desarrollo de Componentes de Visualización
+7.  **Componente del Mapa:**
+    *   Crear un componente `Map.js` que utilice Leaflet para mostrar la ubicación actual de los envíos en un mapa.
+    *   Agregar marcadores para cada paquete o envío activo.
+    *   Actualizar la posición del marcador según los nuevos datos recibidos.
+
+8.  **Componentes de Gráficos de Telemetría:**
+    *   Crear componentes como `TemperatureChart.js` y `GForceChart.js` usando Chart.js o D3.js.
+    *   Mostrar series temporales de la temperatura y la fuerza G para uno o varios paquetes/envíos seleccionados o activos.
+    *   Actualizar los gráficos dinámicamente con los nuevos datos recibidos.
+
+9.  **Componente de KPIs:**
+    *   Crear un componente `KPIs.js` que muestre los tres KPIs definidos:
+        *   `% de Envíos en SLA`
+        *   `Tiempo Medio de Detección (MTTD)`
+        *   `% de Falsos Positivos`
+    *   Llamar a la función `fetchKPIs` y presentar los valores de forma clara y visual (tarjetas, indicadores, etc.).
+
+10. **Componente de Alertas:**
+    *   Crear un componente `Alerts.js` (o un panel integrado en `TelemetryFeed`) para mostrar las alertas generadas por el sistema (temperatura excedida, posible impacto).
+    *   Mostrar detalles como ID del paquete, tipo de alerta y timestamp.
+    *   Puede ser una lista o una notificación visual.
+
+### Fase 4: Integración y Estilo
+11. **Ensamblar la Vista del Dashboard:**
+    *   Integrar todos los componentes creados (`Map`, `TemperatureChart`, `KPIs`, `Alerts`, etc.) dentro del componente principal `Dashboard.js`.
+    *   Asegurar un diseño responsive que funcione bien en diferentes tamaños de pantalla.
+
+12. **Aplicar Estilos:**
+    *   Dar estilo a los componentes usando CSS, Bootstrap o Tailwind para que el dashboard sea visualmente atractivo y profesional.
+    *   Asegurar buena legibilidad de la información y una paleta de colores coherente.
+
+### Fase 5: Pruebas y Conexión Final
+13. **Pruebas Locales:**
+    *   Probar cada componente individualmente y la interacción entre ellos.
+    *   Verificar que los datos se actualicen correctamente desde la API simulada o real.
+    *   Probar la visualización de alertas y KPIs.
+
+14. **Conexión con Backend Real:**
+    *   Conectar el frontend con la API FastAPI implementada por el resto del equipo.
+    *   Asegurar que las URLs de la API sean configurables (por ejemplo, mediante variables de entorno `.env`).
+
+15. **Optimizaciones (Opcional):**
+    *   Evaluar el rendimiento del dashboard, especialmente si se manejan muchos envíos o datos históricos.
+    *   Implementar técnicas de memoización (`React.memo`, `useMemo`) si es necesario.
+
+### Fase 6: (Opcional) Funcionalidades Adicionales
+16. **Filtrado y Selección:**
+    *   Permitir al usuario filtrar la visualización por ID de paquete/envío.
+    *   Permitir seleccionar rangos de tiempo para los gráficos.
+
+17. **Temas (Dark/Light Mode):**
+    *   Implementar un selector de tema si se considera necesario para la usabilidad.
+
+## Consideraciones Generales
+*   **Mock de Datos Inicial:** Al comienzo del desarrollo, se pueden crear archivos con datos de ejemplo para probar la UI/UX del dashboard antes de conectarlo a la API real.
+*   **Documentación del Componente:** Documentar brevemente props y funcionalidad de los componentes principales, especialmente si el equipo es grande.
+*   **Versionado:** Usar Git para versionar el código del frontend.
+*   **URL de la API:** Asegurarse de que la URL base de la API FastAPI sea fácilmente configurable (`.env`).
