@@ -1,0 +1,7 @@
+yarn run v1.22.22
+$ react-scripts start
+Invalid options object. Dev Server has been initialized using an options object that does not match the API schema.
+ - options has an unknown property 'onAfterSetupMiddleware'. These properties are valid:
+   object { allowedHosts?, bonjour?, client?, compress?, devMiddleware?, headers?, historyApiFallback?, host?, hot?, ipc?, liveReload?, onListening?, open?, port?, proxy?, server?, app?, setupExitSignals?, setupMiddlewares?, static?, watchFiles?, webSocketServer? }
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
