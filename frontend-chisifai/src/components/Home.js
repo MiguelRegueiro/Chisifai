@@ -24,13 +24,13 @@ const Home = () => {
                   maxHeight: '200px'
                 }}
               />
-              <Card.Title style={{ color: '#224a70', fontSize: '2rem' }}>
+              <Card.Title style={{ color: '#224a70', fontSize: '3rem', fontWeight: 'bold' }}>
                 <strong>Chisifai Dashboard</strong>
               </Card.Title>
-              <Card.Text className="mt-3" style={{ color: '#1a3a5a', fontSize: '1.1rem' }}>
+              <Card.Text className="mt-4" style={{ color: '#1a3a5a', fontSize: '1.5rem', lineHeight: '1.6' }}>
                 Sistema de monitoreo en tiempo real para el transporte de cheesecakes que controla temperatura y fuerza G.
               </Card.Text>
-              <Card.Text style={{ color: '#1a3a5a' }}>
+              <Card.Text className="mt-3" style={{ color: '#1a3a5a', fontSize: '1.3rem', lineHeight: '1.6' }}>
                 La aplicación permite rastrear envíos en tiempo real, recibir alertas críticas y visualizar métricas clave del sistema.
               </Card.Text>
               <div className="mt-4">

@@ -118,7 +118,7 @@ Chisifai/
 │   ├── models.py                # Modelos de datos Pydantic para validación
 │   ├── init_db.py               # Script de inicialización de base de datos
 │   ├── .env                     # Variables de entorno
-│   ├── telemetry_ingestor.py    # Versión Flask (anterior/alternativa)
+│   ├── telemetry_ingestor.py    # Versión Flask (anterior/alternativa sin base de datos SQL)
 │   └── requirements.txt         # Dependencias de Python
 ├── frontend-chisifai/           # Aplicación React para dashboard frontend
 ├── sensor_simulator/            # Simulador de sensores IoT que publica a MQTT
@@ -139,3 +139,15 @@ Chisifai/
 - **Flujo Node-RED**: Validación de JSON y lógica de reintento para alta disponibilidad
 - **API de ingesta**: FastAPI con integración PostgreSQL para almacenamiento persistente
 - **Resiliencia**: Sistema capaz de manejar fallos temporales sin pérdida de datos
+
+## Medios y Capturas de Pantalla
+
+![Dashboard](/media/Dashboard.png)
+*Dashboard principal mostrando métricas en tiempo real*
+
+![Home Page](/media/HomePage.png)
+*Página de inicio del sistema Chisifai*
+
+![Node-RED Flow](/media/NodeRedFlow.png)
+*Flujo Node-RED para procesamiento de telemetría con validación y reintento*
+
