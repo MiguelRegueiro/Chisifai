@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import Header from './Header';
 import KPIs from './KPIs';
 import Map from './Map';
 import TemperatureChart from './TemperatureChart';
@@ -10,7 +9,6 @@ import Alerts from './Alerts';
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <Header />
       <Container fluid className="dashboard-main">
         <Row>
           <Col xs={12} className="content-col">

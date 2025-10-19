@@ -1,5 +1,16 @@
 .App {
   text-align: center;
+  background-color: #d8eaf2; /* Chisifai primary color */
+}
+
+/* Chisifai Color Variables */
+:root {
+  --chisifai-primary: #d8eaf2;
+  --chisifai-secondary-1: #dfaa57;
+  --chisifai-secondary-2: #224a70;
+  --chisifai-secondary-3: #f5bc4b;
+  --chisifai-dark: #1a3a5a;
+  --chisifai-light: #ebf4fa;
 }
 
 /* Dashboard layout styles */
@@ -7,32 +18,39 @@
   min-height: calc(100vh - 56px); /* Adjust for header height */
   padding-left: 15px;
   padding-right: 15px;
+  background-color: var(--chisifai-primary);
 }
 
 .content-col {
   padding: 15px 20px;
-  background-color: #f5f5f5;
+  background-color: var(--chisifai-light);
+  border-radius: 8px;
 }
 
 /* KPI Card styles */
 .kpi-card {
   height: 120px;
   transition: transform 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(34, 74, 112, 0.15);
+  background-color: white;
+  border: 1px solid var(--chisifai-primary);
 }
 
 .kpi-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 12px rgba(34, 74, 112, 0.2);
+  border-color: var(--chisifai-secondary-3);
 }
 
 .kpi-card .display-4 {
   font-size: 2.5rem;
   line-height: 1;
+  color: var(--chisifai-secondary-2);
 }
 
 .kpi-icon {
   opacity: 0.7;
+  color: var(--chisifai-secondary-1);
 }
 
 /* Map container styles */
@@ -40,6 +58,7 @@
   height: 100%;
   width: 100%;
   border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(34, 74, 112, 0.1);
 }
 
 /* Alert styles */
@@ -49,29 +68,32 @@
 }
 
 .alert-item.list-group-item-danger {
-  border-left-color: #dc3545;
+  border-left-color: var(--chisifai-secondary-1); /* Using #dfaa57 for danger alerts */
 }
 
 .alert-item.list-group-item-warning {
-  border-left-color: #ffc107;
+  border-left-color: var(--chisifai-secondary-3); /* Using #f5bc4b for warning alerts */
 }
 
 .alert-item.list-group-item-info {
-  border-left-color: #17a2b8;
+  border-left-color: var(--chisifai-secondary-2); /* Using #224a70 for info alerts */
 }
 
 /* Chart card styles */
 .card {
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(34, 74, 112, 0.1);
+  border: 1px solid var(--chisifai-primary);
   border-radius: 8px;
   margin-bottom: 1.5rem;
+  background-color: white;
 }
 
 .card-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  background: linear-gradient(135deg, var(--chisifai-secondary-2), var(--chisifai-dark));
+  color: white;
+  border-bottom: 1px solid var(--chisifai-primary);
   font-weight: 600;
+  border-radius: 8px 8px 0 0 !important;
 }
 
 /* Responsive adjustments */
@@ -79,6 +101,7 @@
   .content-col {
     margin-top: 15px;
     padding: 10px;
+    background-color: var(--chisifai-light);
   }
   
   .dashboard-main .row {
