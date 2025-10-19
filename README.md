@@ -140,3 +140,6 @@ Chisifai/
 ![Node-RED Flow](/media/NodeRedFlow.png)
 *Flujo Node-RED para procesamiento de telemetría con validación y reintento*
 
+![Consulta Base de Datos](/media/SELECTaBaseDeDatos.png)
+*Consulta SELECT mostrando la secuencia de eventos almacenados con timestamps correctos*
+
