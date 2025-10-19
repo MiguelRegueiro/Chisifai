@@ -40,16 +40,12 @@ cd Chisifai
    pip install -r requirements.txt
    ```
 
-3. Configure las variables de entorno:
-   - El archivo `.env` contiene la configuración de base de datos
-   - Por defecto usa SQLite para desarrollo; cambie a PostgreSQL para producción
-
-4. Inicie el servidor backend:
+3. Inicie el servidor backend:
    ```bash
    python -m uvicorn main:app --host 0.0.0.0 --port 8001
    ```
 
-5. Inicialice la base de datos (si es necesario):
+4. Inicialice la base de datos (si es necesario):
    ```bash
    python init_db.py
    ```
@@ -88,13 +84,6 @@ cd Chisifai
 - Instale flask-cors: `pip install flask-cors`
 - Verifique que `CORS(app)` esté habilitado en `telemetry_ingestor.py`
 
-### Problemas de conexión
-
-**Síntomas:** Mensajes de error indicando que no se puede conectar al servidor backend.
-
-**Solución:** 
-- Verifique que el backend esté corriendo en el puerto 8001
-- Confirme que la variable `REACT_APP_API_URL` esté correctamente configurada en el archivo `.env` del frontend
 
 ## Estructura del Proyecto
 
