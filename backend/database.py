@@ -8,11 +8,12 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Database configuration - default to SQLite for easy setup
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./chisifai.db")
+# Database configuration - default to PostgreSQL for production, SQLite for development
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://chisifai_user:chisifai_password@localhost/chisifai_db")
 
 # Create engine
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
+# Using pool_pre_ping to handle potential connection issues
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

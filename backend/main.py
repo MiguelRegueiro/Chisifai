@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from typing import List, Dict, Optional
+from sqlalchemy.orm import Session
 import random
 import time
 from datetime import datetime
+from database import get_db, Telemetry
+from models import TelemetryCreate, TelemetryResponse
 
 app = FastAPI(title="Chisifai API", version="1.0.0")
 
@@ -17,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory storage for demonstration
+# In-memory storage for demonstration (will be replaced with database)
 telemetry_data = []
 alerts_data = []
 
@@ -38,6 +41,31 @@ for i in range(5):
 @app.get("/")
 def read_root():
     return {"message": "Chisifai Backend API", "status": "running"}
+
+@app.post("/api/telemetry")
+def create_telemetry(telemetry: TelemetryCreate, db: Session = Depends(get_db)):
+    """Receive telemetry data from IoT sensors via Node-RED"""
+    try:
+        # Create a new Telemetry record
+        db_telemetry = Telemetry(
+            package_id=telemetry.packageId,
+            temperature=telemetry.temperature,
+            g_force=telemetry.gForce,
+            latitude=telemetry.latitude,
+            longitude=telemetry.longitude,
+            timestamp=datetime.fromisoformat(telemetry.timestamp.replace('Z', '+00:00')) if telemetry.timestamp.endswith('Z') else datetime.fromisoformat(telemetry.timestamp),
+            battery_level=telemetry.batteryLevel,
+            signal_strength=telemetry.signalStrength
+        )
+        db.add(db_telemetry)
+        db.commit()
+        db.refresh(db_telemetry)
+        
+        return {"message": "Telemetry data received and stored successfully", "id": db_telemetry.id}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error storing telemetry data: {str(e)}")
+
 
 @app.get("/api/telemetry")
 def get_telemetry():
@@ -90,6 +118,26 @@ def get_alerts():
             alerts_data.pop()
     
     return alerts_data[:5]  # Return only last 5
+
+@app.get("/api/telemetry/stored")
+def get_stored_telemetry(db: Session = Depends(get_db)):
+    """Get stored telemetry data from database"""
+    stored_telemetry = db.query(Telemetry).order_by(Telemetry.timestamp.desc()).limit(100).all()
+    return [
+        {
+            "id": item.id,
+            "packageId": item.package_id,
+            "temperature": item.temperature,
+            "gForce": item.g_force,
+            "latitude": item.latitude,
+            "longitude": item.longitude,
+            "timestamp": item.timestamp.isoformat(),
+            "batteryLevel": item.battery_level,
+            "signalStrength": item.signal_strength
+        }
+        for item in stored_telemetry
+    ]
+
 
 @app.get("/api/location")
 def get_location():

@@ -6,10 +6,12 @@ Chisifai es un sistema de monitoreo en tiempo real para el transporte de cheesec
 
 ## Tecnologías
 
-- **Backend**: Flask (Python)
+- **Backend**: FastAPI (Python) with PostgreSQL
 - **Frontend**: React.js
-- **Base de datos**: SQLite
-- **Puertos**: Backend (8001), Frontend (3000)
+- **MQTT Broker**: For sensor data publishing
+- **Node-RED**: For data processing pipeline
+- **Base de datos**: PostgreSQL (with SQLite fallback for development)
+- **Puertos**: Backend (8001), Frontend (3000), Node-RED (1880)
 
 ## Requisitos Previos
 
@@ -35,15 +37,21 @@ cd Chisifai
 
 2. Instale las dependencias de Python:
    ```bash
-   pip install flask flask-cors
+   pip install -r requirements.txt
    ```
 
-3. Configure las variables de entorno (opcional, el sistema usará valores por defecto):
-   - Cree un archivo `.env` en el directorio `backend` si desea personalizar configuraciones
+3. Configure las variables de entorno:
+   - El archivo `.env` contiene la configuración de base de datos
+   - Por defecto usa SQLite para desarrollo; cambie a PostgreSQL para producción
 
 4. Inicie el servidor backend:
    ```bash
-   python telemetry_ingestor.py
+   python -m uvicorn main:app --host 0.0.0.0 --port 8001
+   ```
+
+5. Inicialice la base de datos (si es necesario):
+   ```bash
+   python init_db.py
    ```
 
 ### 3. Configurar el Frontend (puerto 3000)
@@ -93,20 +101,16 @@ cd Chisifai
 ```
 Chisifai/
 ├── backend/
-│   ├── telemetry_ingestor.py    # Servidor Flask principal
-│   ├── database.py              # Configuración de base de datos
+│   ├── main.py                  # Servidor FastAPI principal
+│   ├── database.py              # Configuración de base de datos SQLAlchemy
+│   ├── models.py                # Modelos de datos Pydantic
+│   ├── init_db.py               # Script de inicialización de base de datos
+│   ├── .env                     # Variables de entorno
 │   └── requirements.txt         # Dependencias de Python
 ├── frontend-chisifai/           # Aplicación React
-├── sensor_simulator/            # Simulador de sensores
-└── start_servers.sh             # Script para iniciar ambos servidores
-```
-
-### Inicio Rápido
-
-Use el script proporcionado para iniciar ambos servidores:
-
-```bash
-./start_servers.sh
+├── sensor_simulator/            # Simulador de sensores MQTT
+├── chisifai_node_red_flow.json  # Flujo Node-RED para procesamiento de datos
+└── start_servers.sh             # Script para iniciar todos los servidores
 ```
 
 ## Características
@@ -115,3 +119,10 @@ Use el script proporcionado para iniciar ambos servidores:
 - Gráficos en tiempo real de temperatura y fuerza G
 - Panel de alertas y métricas clave
 - Diseño responsive
+
+## Implementación del Capítulo 1 - "Del sensor al primer dato"
+
+- **Simulador de sensores**: Publicador MQTT que genera datos realistas de telemetría
+- **Flujo Node-RED**: Validación de JSON y lógica de reintento para alta disponibilidad
+- **API de ingesta**: FastAPI con integración PostgreSQL para almacenamiento persistente
+- **Resiliencia**: Sistema capaz de manejar fallos temporales sin pérdida de datos

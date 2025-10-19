@@ -11,11 +11,30 @@
         "nl": false,
         "rap": true,
         "inputs": 0,
-        "x": 210,
-        "y": 180,
+        "x": 180,
+        "y": 160,
         "wires": [
             [
-                "debug-node",
+                "json-validation-node",
+                "debug-node"
+            ]
+        ]
+    },
+    {
+        "id": "json-validation-node",
+        "type": "function",
+        "z": "flow1",
+        "name": "Validate JSON Structure",
+        "func": "// Validate required fields in the telemetry data\nconst requiredFields = ['id', 'packageId', 'temperature', 'gForce', 'latitude', 'longitude', 'timestamp'];\n\n// Check if payload is an object and has all required fields\nif (typeof msg.payload !== 'object' || msg.payload === null) {\n    node.error('Payload is not a valid object', msg);\n    return null;\n}\n\nfor (const field of requiredFields) {\n    if (!(field in msg.payload)) {\n        node.error(`Missing required field: ${field}`, msg);\n        return null;\n    }\n    \n    // Validate data types\n    if (field === 'temperature' || field === 'gForce' || field === 'latitude' || field === 'longitude') {\n        if (typeof msg.payload[field] !== 'number') {\n            node.error(`Field ${field} must be a number`, msg);\n            return null;\n        }\n    } else if (field === 'id' || field === 'packageId' || field === 'timestamp') {\n        if (typeof msg.payload[field] !== 'string') {\n            node.error(`Field ${field} must be a string`, msg);\n            return null;\n        }\n    }\n}\n\n// If validation passes, continue with the message\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 160,
+        "wires": [
+            [
                 "http-request-node"
             ]
         ]
@@ -34,7 +53,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 430,
-        "y": 140,
+        "y": 240,
         "wires": []
     },
     {
@@ -58,11 +77,22 @@
                 "valueType": "application/json"
             }
         ],
-        "x": 450,
-        "y": 220,
+        "x": 670,
+        "y": 160,
         "wires": [
             [
                 "debug-response"
+            ]
+        ],
+        " wires": [
+            [
+                "debug-response"
+            ]
+        ],
+        "wire-error": [
+            [
+                "catch-node",
+                "debug-error"
             ]
         ]
     },
@@ -79,8 +109,86 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 670,
-        "y": 220,
+        "x": 910,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "catch-node",
+        "type": "catch",
+        "z": "flow1",
+        "name": "Handle HTTP Error",
+        "scope": [
+            "http-request-node"
+        ],
+        "uncaught": false,
+        "x": 680,
+        "y": 240,
+        "wires": [
+            [
+                "retry-logic-node",
+                "debug-error"
+            ]
+        ]
+    },
+    {
+        "id": "retry-logic-node",
+        "type": "function",
+        "z": "flow1",
+        "name": "Retry Logic",
+        "func": "// Retry logic for failed API calls\nconst maxRetries = 5;\nconst retryDelay = 5000; // 5 seconds\n\n// Initialize retry count if not present\nif (!msg.retryCount) {\n    msg.retryCount = 0;\n}\n\n// Check if max retries exceeded\nif (msg.retryCount >= maxRetries) {\n    node.error(`Max retries (${maxRetries}) exceeded for message`, msg);\n    return null;\n}\n\n// Increment retry count\nmsg.retryCount++;\n\n// Set up retry after delay\nmsg.delay = retryDelay;\n\n// Send to delay node\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 240,
+        "wires": [
+            [
+                "delay-node"
+            ]
+        ]
+    },
+    {
+        "id": "delay-node",
+        "type": "delay",
+        "z": "flow1",
+        "name": "Retry Delay",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "outputs": 1,
+        "x": 1140,
+        "y": 240,
+        "wires": [
+            [
+                "http-request-node"
+            ]
+        ]
+    },
+    {
+        "id": "debug-error",
+        "type": "debug",
+        "z": "flow1",
+        "name": "Debug Error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "error",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 320,
         "wires": []
     },
     {
@@ -113,6 +221,6 @@
         "type": "tab",
         "label": "Chisifai Sensor Flow",
         "disabled": false,
-        "info": "Flow to receive telemetry data from Chisifai IoT sensors and forward to backend API"
+        "info": "Flow to receive telemetry data from Chisifai IoT sensors, validate JSON, and forward to backend API with retry logic"
     }
 ]

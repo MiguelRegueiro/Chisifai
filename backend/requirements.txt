@@ -3,3 +3,6 @@ uvicorn==0.32.0
 pydantic==2.9.2
 Flask==3.0.3
 flask-cors==5.0.0
+paho-mqtt==1.6.1
+sqlalchemy==1.4.23
+psycopg2-binary==2.9.9
