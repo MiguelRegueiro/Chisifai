@@ -53,9 +53,9 @@ cd Chisifai
    cd frontend-chisifai
    ```
 
-2. Instale las dependencias de JavaScript:
+2. Instale las dependencias de JavaScript con yarn o npm:
    ```bash
-   yarn install
+   npm install
    ```
 
 3. Configure las variables de entorno:
@@ -66,7 +66,7 @@ cd Chisifai
 
 4. Inicie el servidor de desarrollo:
    ```bash
-   yarn start
+   npm start
    ```
 
 ## Inicio Rápido
