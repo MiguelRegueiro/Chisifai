@@ -131,22 +131,17 @@ Chisifai/
 
 ## Medios y Capturas de Pantalla
 
-![Dashboard](/media/Dashboard.png)
-*Dashboard principal mostrando métricas en tiempo real*
-
-![Home Page](/media/HomePage.png)
 *Página de inicio del sistema Chisifai*
+![Home Page](/media/HomePage.png)
 
-![Node-RED Flow](/media/NodeRedFlow.png)
+*Dashboard principal mostrando métricas en tiempo real*
+![Dashboard](/media/Dashboard.png)
+
 *Flujo Node-RED para procesamiento de telemetría con validación y reintento*
+![Node-RED Flow](/media/NodeRedFlow.png)
 
-![Consulta Base de Datos](/media/SELECTaBaseDeDatos.png)
 *Consulta SELECT mostrando la secuencia de eventos almacenados con timestamps correctos*
-La consulta SELECT mostrada en la imagen demuestra que el sistema completo está funcionando correctamente, desde la generación de datos en los
-  sensores hasta su almacenamiento persistente en la base de datos. Se puede observar cómo los registros de telemetría se almacenan con sus
-  respectivos timestamps ordenados cronológicamente (del más reciente al más antiguo), mostrando una secuencia de eventos que incluye información
-   completa como ID de paquete, temperatura, fuerza G, coordenadas GPS, nivel de batería y potencia de señal, todo ello con timestamps precisos
-  que reflejan el momento exacto de recepción de cada dato. Esto confirma que la tubería completa de sensor → MQTT → Node-RED → API → base de
-  datos está funcionando sin pérdida de información, cumpliendo con los requisitos de la Chapter 1 donde cada evento es registrado con su marca
-  de tiempo correcta.
+![Consulta Base de Datos](/media/SELECTaBaseDeDatos.png)
+
+La consulta SELECT demuestra que el sistema completo está funcionando correctamente, desde la generación de datos en los sensores hasta su almacenamiento persistente en la base de datos. Se puede observar cómo los registros de telemetría se almacenan con sus respectivos timestamps ordenados cronológicamente, mostrando una secuencia de eventos con información completa como ID de paquete, temperatura, fuerza G, coordenadas GPS, nivel de batería y potencia de señal. Esto confirma que la tubería completa de sensor → MQTT → Node-RED → API → base de datos está funcionando sin pérdida de información, cumpliendo los requisitos de Chapter 1 donde cada evento es registrado con su marca de tiempo correcta.
 
