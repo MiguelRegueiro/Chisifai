@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
+import time
 from datetime import datetime
 import os
+import random
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -41,16 +43,16 @@ def receive_telemetry():
 telemetry_data = []
 alerts_data = []
 
-# Sample initial data
+# Sample initial data with different starting positions
 for i in range(5):
     package_id = f"PKG-{str(i+1).zfill(3)}"
     data = {
         "id": i + 1,
         "packageId": package_id,
-        "temperature": 4.5,
-        "gForce": 1.2,
-        "latitude": 40.4168,
-        "longitude": -3.7038,
+        "temperature": round(2 + random.random() * 6, 2),
+        "gForce": round(0.2 + random.random() * 2.8, 2),
+        "latitude": round(40.4168 + (random.random() - 0.5) * 0.5, 4),
+        "longitude": round(-3.7038 + (random.random() - 0.5) * 0.5, 4),
         "timestamp": datetime.now().isoformat()
     }
     telemetry_data.append(data)
@@ -72,7 +74,12 @@ def get_kpis():
     return {
         "slaPercentage": round(90 + random.random() * 8, 1),
         "mttDetection": random.randint(10, 60),
-        "falsePositiveRate": round(5 + random.random() * 8, 1)
+        "falsePositiveRate": round(5 + random.random() * 8, 1),
+        # Nuevas métricas importantes para entrega de tartas de queso
+        "temperatureCompliance": round(85 + random.random() * 12, 1),  # % de entregas con temperatura adecuada
+        "avgDeliveryTime": round(25 + random.random() * 15, 1),       # Tiempo promedio de entrega en minutos
+        "productConditionRate": round(94 + random.random() * 5, 1),   # % de productos entregados en buenas condiciones
+        "customerSatisfaction": round(4.0 + random.random() * 0.8, 1) # Calificación promedio del cliente
     }
 
 @app.route('/api/alerts', methods=['GET'])
@@ -106,8 +113,17 @@ def get_alerts():
 @app.route('/api/location', methods=['GET'])
 def get_location():
     """Get location data (similar to telemetry but structured for map)"""
+    import random
     locations = []
     for item in telemetry_data:
+        # Simulate movement by adding small random changes to position
+        lat_change = (random.random() - 0.5) * 0.01  # Small lat change
+        lng_change = (random.random() - 0.5) * 0.01  # Small lng change
+        
+        # Update the position in telemetry_data for consistency
+        item["latitude"] = round(item["latitude"] + lat_change, 4)
+        item["longitude"] = round(item["longitude"] + lng_change, 4)
+        
         locations.append({
             "id": item["id"],
             "lat": item["latitude"],

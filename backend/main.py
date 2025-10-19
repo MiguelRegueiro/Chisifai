@@ -59,7 +59,12 @@ def get_kpis():
     return {
         "slaPercentage": round(90 + random.random() * 8, 1),
         "mttDetection": random.randint(10, 60),
-        "falsePositiveRate": round(5 + random.random() * 8, 1)
+        "falsePositiveRate": round(5 + random.random() * 8, 1),
+        # Nuevas métricas importantes para entrega de tartas de queso
+        "temperatureCompliance": round(85 + random.random() * 12, 1),  # % de entregas con temperatura adecuada
+        "avgDeliveryTime": round(25 + random.random() * 15, 1),       # Tiempo promedio de entrega en minutos
+        "productConditionRate": round(94 + random.random() * 5, 1),   # % de productos entregados en buenas condiciones
+        "customerSatisfaction": round(4.0 + random.random() * 0.8, 1) # Calificación promedio del cliente
     }
 
 @app.get("/api/alerts")
@@ -89,8 +94,17 @@ def get_alerts():
 @app.get("/api/location")
 def get_location():
     """Get location data (similar to telemetry but structured for map)"""
+    import random
     locations = []
     for item in telemetry_data:
+        # Simulate movement by adding small random changes to position
+        lat_change = (random.random() - 0.5) * 0.01  # Small lat change
+        lng_change = (random.random() - 0.5) * 0.01  # Small lng change
+        
+        # Update the position in telemetry_data for consistency
+        item["latitude"] = round(item["latitude"] + lat_change, 4)
+        item["longitude"] = round(item["longitude"] + lng_change, 4)
+        
         locations.append({
             "id": item["id"],
             "lat": item["latitude"],
