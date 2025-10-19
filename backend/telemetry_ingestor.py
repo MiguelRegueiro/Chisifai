@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import json
 from datetime import datetime
 import os
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # In-memory storage for received telemetry data
 telemetry_storage = []

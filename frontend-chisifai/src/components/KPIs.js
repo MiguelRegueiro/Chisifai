@@ -5,6 +5,8 @@ import { useData } from '../contexts/DataContext';
 
 const KPIs = () => {
   const { kpis, loading } = useData();
+  console.log('KPIs component - kpis state:', kpis);
+  console.log('KPIs component - loading state:', loading);
 
   // Default values when loading
   const kpiData = loading ? [
@@ -12,9 +14,9 @@ const KPIs = () => {
     { title: "Tiempo Medio de Detección", value: "Cargando...", description: "Tiempo promedio para detectar incidentes", icon: "⏱️", color: "secondary" },
     { title: "% de Falsos Positivos", value: "Cargando...", description: "Alertas que no correspondieron a incidentes reales", icon: "⚠️", color: "secondary" }
   ] : [
-    { title: "% de Envíos en SLA", value: `${kpis.slaPercentage}%`, description: "Envíos que llegaron sin incidentes", icon: "📦", color: "success" },
-    { title: "Tiempo Medio de Detección", value: `${kpis.mttDetection} seg`, description: "Tiempo promedio para detectar incidentes", icon: "⏱️", color: "info" },
-    { title: "% de Falsos Positivos", value: `${kpis.falsePositiveRate}%`, description: "Alertas que no correspondieron a incidentes reales", icon: "⚠️", color: "warning" }
+    { title: "% de Envíos en SLA", value: `${kpis.slaPercentage !== undefined ? kpis.slaPercentage : 'N/A'}%`, description: "Envíos que llegaron sin incidentes", icon: "📦", color: "success" },
+    { title: "Tiempo Medio de Detección", value: `${kpis.mttDetection !== undefined ? kpis.mttDetection : 'N/A'} seg`, description: "Tiempo promedio para detectar incidentes", icon: "⏱️", color: "info" },
+    { title: "% de Falsos Positivos", value: `${kpis.falsePositiveRate !== undefined ? kpis.falsePositiveRate : 'N/A'}%`, description: "Alertas que no correspondieron a incidentes reales", icon: "⚠️", color: "warning" }
   ];
 
   return (

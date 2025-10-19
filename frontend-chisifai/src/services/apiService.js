@@ -9,23 +9,34 @@ const apiFetch = async (endpoint) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
+    console.log(`Making API request to: ${API_BASE_URL}${endpoint}`);
+    
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      signal: controller.signal
+      signal: controller.signal,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
     });
     
     clearTimeout(timeoutId);
+    
+    console.log(`Response status: ${response.status}`);
+    console.log(`Response headers:`, [...response.headers.entries()]);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
+    console.log(`API response from ${endpoint}:`, data);
     return data;
   } catch (error) {
     if (error.name === 'AbortError') {
       console.error(`Request timeout for ${endpoint}`);
     } else {
       console.error(`Error fetching from ${endpoint}:`, error.message);
+      console.error(`Full error:`, error);
     }
     return null;
   }

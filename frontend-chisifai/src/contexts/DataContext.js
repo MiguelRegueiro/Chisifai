@@ -19,6 +19,7 @@ export const DataProvider = ({ children }) => {
 
   // Fetch real data from API
   const fetchData = async () => {
+    console.log('Starting data fetch...');
     setLoading(true);
     
     try {
@@ -30,9 +31,14 @@ export const DataProvider = ({ children }) => {
         fetchLocationData()
       ]);
       
+      console.log('Raw API responses:', { telemetry, kpis, alerts, locations });
+      
       // Only update state if data is valid
       if (telemetry !== null) setTelemetryData(telemetry);
-      if (kpis !== null) setKpis(kpis);
+      if (kpis !== null) {
+        console.log('Setting KPIs:', kpis);
+        setKpis(kpis);
+      }
       if (alerts !== null) setAlerts(alerts);
       if (locations !== null) setLocationData(locations);
     } catch (error) {

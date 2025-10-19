@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Call</title>
+    <script>
+        async function testAPI() {
+            try {
+                console.log("Trying to fetch KPIs...");
+                const response = await fetch('http://localhost:8001/api/kpis');
+                console.log("Response received:", response);
+                
+                if (!response.ok) {
+                    console.error("HTTP error:", response.status);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log("KPIs data:", data);
+                
+                document.getElementById('result').innerHTML = 
+                    `<h3>API Response:</h3>
+                    <p>SLA Percentage: ${data.slaPercentage}</p>
+                    <p>MTT Detection: ${data.mttDetection}</p>
+                    <p>False Positive Rate: ${data.falsePositiveRate}</p>`;
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        // Ejecutar la prueba cuando se carga la página
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</head>
+<body>
+    <h1>Testing API Connection</h1>
+    <div id="result">Loading...</div>
+</body>
+</html>
