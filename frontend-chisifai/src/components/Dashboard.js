@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from './Header';
-import Sidebar from './Sidebar';
 import KPIs from './KPIs';
 import Map from './Map';
 import TemperatureChart from './TemperatureChart';
@@ -14,10 +13,7 @@ const Dashboard = () => {
       <Header />
       <Container fluid className="dashboard-main">
         <Row>
-          <Col md={2} className="sidebar-col d-none d-md-block">
-            <Sidebar />
-          </Col>
-          <Col xs={12} md={10} className="content-col">
+          <Col xs={12} className="content-col">
             <Row>
               <Col xs={12}>
                 <KPIs />
