@@ -22,7 +22,7 @@ Chisifai es un sistema de monitoreo en tiempo real para el transporte de cheesec
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/MiguelRegueiro/Chisifai
 cd Chisifai
 ```
 
