@@ -76,9 +76,36 @@ cd Chisifai
 
 **Síntomas:** KPIs muestran "undefined" o "N/A", errores de red en la consola del navegador.
 
-**Solución:** Asegúrese de que flask-cors esté instalado y configurado en el backend:
-- Instale flask-cors: `pip install flask-cors`
-- Verifique que `CORS(app)` esté habilitado en `telemetry_ingestor.py`
+**Solución:** Asegúrese de que el middleware CORS esté configurado en el backend:
+- FastAPI incluye CORS middleware en `main.py`
+- Verifique que esté permitiendo los orígenes necesarios
+
+### Problemas de conexión con la base de datos
+
+**Síntomas:** Error al almacenar telemetría, mensajes de error relacionados con la base de datos.
+
+**Solución:**
+- Verifique que el archivo `.env` tenga la configuración correcta de DATABASE_URL
+- Para desarrollo con SQLite: `DATABASE_URL=sqlite:///./chisifai.db`
+- Para producción con PostgreSQL: `DATABASE_URL=postgresql://usuario:contraseña@localhost/nombre_bd`
+- Inicialice la base de datos con: `python init_db.py`
+
+### Problemas de inicialización de la base de datos
+
+**Síntomas:** Error al arrancar el servidor o al intentar almacenar datos de telemetría.
+
+**Solución:**
+- Ejecute `python init_db.py` para crear las tablas necesarias
+- Asegúrese de tener instaladas las dependencias: `pip install -r requirements.txt`
+
+
+### Problemas de conexión
+
+**Síntomas:** Mensajes de error indicando que no se puede conectar al servidor backend.
+
+**Solución:** 
+- Verifique que el backend esté corriendo en el puerto 8001
+- Confirme que la variable `REACT_APP_API_URL` esté correctamente configurada en el archivo `.env` del frontend
 
 
 ## Estructura del Proyecto
@@ -86,15 +113,16 @@ cd Chisifai
 ```
 Chisifai/
 ├── backend/
-│   ├── main.py                  # Servidor FastAPI principal
+│   ├── main.py                  # Servidor FastAPI principal con endpoints API
 │   ├── database.py              # Configuración de base de datos SQLAlchemy
-│   ├── models.py                # Modelos de datos Pydantic
+│   ├── models.py                # Modelos de datos Pydantic para validación
 │   ├── init_db.py               # Script de inicialización de base de datos
 │   ├── .env                     # Variables de entorno
+│   ├── telemetry_ingestor.py    # Versión Flask (anterior/alternativa)
 │   └── requirements.txt         # Dependencias de Python
-├── frontend-chisifai/           # Aplicación React
-├── sensor_simulator/            # Simulador de sensores MQTT
-├── chisifai_node_red_flow.json  # Flujo Node-RED para procesamiento de datos
+├── frontend-chisifai/           # Aplicación React para dashboard frontend
+├── sensor_simulator/            # Simulador de sensores IoT que publica a MQTT
+├── chisifai_node_red_flow.json  # Flujo Node-RED con validación y reintento
 └── start_servers.sh             # Script para iniciar todos los servidores
 ```
 
