@@ -58,26 +58,10 @@ cd Chisifai
    npm install
    ```
 
-3. Configure las variables de entorno:
-   - Cree un archivo `.env` en el directorio `frontend-chisifai` con el siguiente contenido:
-   ```
-   REACT_APP_API_URL=http://localhost:8001
-   ```
-
-4. Inicie el servidor de desarrollo:
+3. Inicie el servidor de desarrollo:
    ```bash
    npm start
    ```
-
-## Inicio Rápido
-
-Para iniciar ambos servidores simultáneamente, puede usar el script proporcionado:
-
-```bash
-./start_servers.sh
-```
-
-Este script iniciará tanto el backend como el frontend en terminales separadas.
 
 ## Características
 
