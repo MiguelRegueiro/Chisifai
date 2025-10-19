@@ -88,15 +88,6 @@ cd Chisifai
 - Verifique que el archivo `.env` tenga la configuración correcta de DATABASE_URL
 - Para desarrollo con SQLite: `DATABASE_URL=sqlite:///./chisifai.db`
 - Para producción con PostgreSQL: `DATABASE_URL=postgresql://usuario:contraseña@localhost/nombre_bd`
-- Inicialice la base de datos con: `python init_db.py`
-
-### Problemas de inicialización de la base de datos
-
-**Síntomas:** Error al arrancar el servidor o al intentar almacenar datos de telemetría.
-
-**Solución:**
-- Ejecute `python init_db.py` para crear las tablas necesarias
-- Asegúrese de tener instaladas las dependencias: `pip install -r requirements.txt`
 
 
 ### Problemas de conexión
@@ -116,14 +107,12 @@ Chisifai/
 │   ├── main.py                  # Servidor FastAPI principal con endpoints API
 │   ├── database.py              # Configuración de base de datos SQLAlchemy
 │   ├── models.py                # Modelos de datos Pydantic para validación
-│   ├── init_db.py               # Script de inicialización de base de datos
 │   ├── .env                     # Variables de entorno
 │   ├── telemetry_ingestor.py    # Versión Flask (anterior/alternativa sin base de datos SQL)
 │   └── requirements.txt         # Dependencias de Python
 ├── frontend-chisifai/           # Aplicación React para dashboard frontend
 ├── sensor_simulator/            # Simulador de sensores IoT que publica a MQTT
 ├── chisifai_node_red_flow.json  # Flujo Node-RED con validación y reintento
-└── start_servers.sh             # Script para iniciar todos los servidores
 ```
 
 ## Características
