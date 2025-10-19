@@ -21,7 +21,7 @@ const KPIs = () => {
 
   return (
     <div className="kpis-container mb-4">
-      <h3 className="mb-4">Indicadores Clave de Rendimiento</h3>
+      <h3 className="mb-4 fw-bold">Indicadores Clave de Rendimiento</h3>
       <Row>
         {kpiData.map((kpi, index) => (
           <Col md={4} key={index} className="mb-3">
