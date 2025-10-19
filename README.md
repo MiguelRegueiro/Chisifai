@@ -45,10 +45,6 @@ cd Chisifai
    python -m uvicorn main:app --host 0.0.0.0 --port 8001
    ```
 
-4. Inicialice la base de datos (si es necesario):
-   ```bash
-   python init_db.py
-   ```
 
 ### 3. Configurar el Frontend (puerto 3000)
 
