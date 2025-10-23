@@ -5,6 +5,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden; /* Prevent overscroll on body */
+  overscroll-behavior: none; /* Prevents the overscroll/bounce effect */
+  height: 100vh; /* Ensure it takes full viewport height */
+}
+
+html {
+  overflow: hidden; /* Prevent overscroll on html */
+  overscroll-behavior: none; /* Prevents the overscroll/bounce effect */
+  height: 100%;
+  -webkit-overflow-scrolling: touch; /* For iOS Safari */
 }
 
 code {

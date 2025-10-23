@@ -1,10 +1,10 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import KPIs from './KPIs';
-import Map from './Map';
 import TemperatureChart from './TemperatureChart';
 import GForceChart from './GForceChart';
 import Alerts from './Alerts';
+import PackageStats from './PackageStats';
 
 const Dashboard = () => {
   return (
@@ -19,18 +19,20 @@ const Dashboard = () => {
             </Row>
             <Row>
               <Col xs={12} md={8}>
-                <Map />
+                <TemperatureChart />
               </Col>
               <Col xs={12} md={4}>
                 <Alerts />
               </Col>
             </Row>
             <Row>
-              <Col xs={12} md={6}>
-                <TemperatureChart />
-              </Col>
-              <Col xs={12} md={6}>
+              <Col xs={12}>
                 <GForceChart />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <PackageStats />
               </Col>
             </Row>
           </Col>

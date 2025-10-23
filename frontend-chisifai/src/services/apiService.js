@@ -1,6 +1,6 @@
 // apiService.js - API service module to connect with FastAPI backend
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
 // Generic API fetch function with error handling
 const apiFetch = async (endpoint) => {
@@ -62,3 +62,12 @@ export const fetchLocationData = async () => {
   return await apiFetch('/api/location') || [];
 };
 
+// Fetch temperature data
+export const fetchTemperatureData = async () => {
+  return await apiFetch('/api/temperature') || [];
+};
+
+// Fetch G-force data
+export const fetchGForceData = async () => {
+  return await apiFetch('/api/gforce') || [];
+};

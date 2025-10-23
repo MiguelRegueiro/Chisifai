@@ -9,9 +9,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useData } from '../contexts/DataContext';
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 ChartJS.register(
   CategoryScale,
@@ -20,12 +22,15 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler,
+  annotationPlugin
 );
 
 const TemperatureChart = () => {
-  const { telemetryData, loading } = useData();
+  const { loading, temperatureData } = useData();
   const chartRef = useRef(null);
+  const [lastKnownData, setLastKnownData] = useState([]);
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -35,42 +40,59 @@ const TemperatureChart = () => {
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         tension: 0.1,
+        fill: false,
       },
     ],
   });
 
-  // Update chart data when telemetry data changes
+  // Update last known data when temperature data changes
   useEffect(() => {
-    if (telemetryData && telemetryData.length > 0 && !loading) {
-      // Use the timestamp from the first data point to represent the current update time
-      const currentTimestamp = new Date().toLocaleTimeString();
-      // Calculate average temperature if multiple packages exist
-      const avgTemp = telemetryData.length > 0 
-        ? telemetryData.reduce((sum, item) => sum + item.temperature, 0) / telemetryData.length
-        : 0;
+    if (temperatureData && temperatureData.length > 0 && !loading) {
+      setLastKnownData(temperatureData);
+    }
+  }, [temperatureData, loading]);
+
+  // Use last known data to draw chart even during loading
+  useEffect(() => {
+    const dataToUse = loading ? lastKnownData : temperatureData;
+    
+    // Always ensure there's some data for the chart
+    if (dataToUse && dataToUse.length > 0) {
+      // Get the last 10 temperature readings
+      const recentData = dataToUse.slice(-10);
+      const labels = recentData.map(item => new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      const temperatures = recentData.map(item => item.value);
       
-      // Update chart data
-      setChartData(prevData => {
-        // Only add new data point if it's different from the last one to prevent duplicates
-        if (prevData.labels.length > 0 && prevData.labels[prevData.labels.length - 1] === currentTimestamp) {
-          return prevData; // Return previous data if timestamp is the same (avoid duplicate points)
-        }
-        
-        const newLabels = [...prevData.labels.slice(-9), currentTimestamp]; // Keep last 10 points
-        const newData = [...prevData.datasets[0].data.slice(-9), avgTemp];
-        
-        return {
-          labels: newLabels,
-          datasets: [
-            {
-              ...prevData.datasets[0],
-              data: newData,
-            }
-          ]
-        };
+      setChartData({
+        labels: labels,
+        datasets: [
+          {
+            label: 'Temperatura (°C)',
+            data: temperatures,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            tension: 0.1,
+            fill: false,
+          }
+        ],
+      });
+    } else {
+      // Provide default "empty" chart data to avoid errors
+      setChartData({
+        labels: ['Sin datos'],
+        datasets: [
+          {
+            label: 'Temperatura (°C)',
+            data: [null],
+            borderColor: 'rgb(200, 200, 200)',
+            backgroundColor: 'rgba(200, 200, 200, 0.5)',
+            tension: 0.1,
+            fill: false,
+          }
+        ],
       });
     }
-  }, [telemetryData, loading]);
+  }, [lastKnownData, temperatureData, loading]);
 
   const options = {
     responsive: true,
@@ -80,7 +102,7 @@ const TemperatureChart = () => {
       },
       title: {
         display: true,
-        text: 'Temperatura en Tiempo Real',
+        text: 'Historial de Temperatura',
       },
     },
     scales: {
@@ -89,9 +111,46 @@ const TemperatureChart = () => {
           display: true,
           text: 'Temperatura (°C)',
         },
-        min: 0,
-        max: 10,
+        min: 15,
+        max: 35,
+        suggestedMax: 35,
       },
+      x: {
+        title: {
+          display: true,
+          text: 'Tiempo',
+        }
+      }
+    },
+    annotation: {
+      annotations: {
+        criticalTemp: {
+          type: 'line',
+          yMin: 26,
+          yMax: 26,
+          borderColor: 'rgb(255, 0, 0)',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          label: {
+            display: true,
+            content: 'Límite Crítico (26°C)',
+            position: 'start',
+          }
+        },
+        safeTemp: {
+          type: 'line',
+          yMin: 24,
+          yMax: 24,
+          borderColor: 'rgb(0, 255, 0)',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          label: {
+            display: true,
+            content: 'Rango Seguro (24°C)',
+            position: 'start',
+          }
+        }
+      }
     },
     animation: {
       duration: 300, // Animation duration in milliseconds
@@ -103,7 +162,7 @@ const TemperatureChart = () => {
       <Card.Header>
         <h5 className="mb-0">Seguimiento de Temperatura</h5>
       </Card.Header>
-      <Card.Body>
+      <Card.Body style={{ height: '300px' }}>
         <Line ref={chartRef} options={options} data={chartData} />
       </Card.Body>
     </Card>

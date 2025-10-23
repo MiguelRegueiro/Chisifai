@@ -59,16 +59,16 @@ class SensorSimulator:
     def generate_telemetry_data(self):
         """Generate realistic telemetry data for cheese cake shipment monitoring."""
         
-        # Simulate realistic temperature variation (should be 2-8°C for cheese cake)
+        # Simulate realistic temperature variation (should be 18-24°C for cheese cake at room temperature)
         # Add some variation based on time, location, and potential issues
-        base_temp = 4.0  # Optimal temperature
-        temp_variation = (random.random() - 0.5) * 2.0  # ±1°C variation
+        base_temp = 21.0  # Optimal temperature for cheesecake (midpoint of 18-24°C)
+        temp_variation = (random.random() - 0.5) * 4.0  # ±2°C variation gives us 19-23°C range
         
-        # Occasionally simulate temperature issues (10% of the time)
-        if random.random() < 0.1:
-            temp_variation = random.random() * 8.0  # Could go up to 12°C
+        # Occasionally simulate temperature issues (2% of the time)
+        if random.random() < 0.02:
+            temp_variation = 5.0 + random.random() * 8.0  # Could go up to 34°C to simulate heating issues
             
-        temperature = max(0.0, min(15.0, base_temp + temp_variation))  # Clamp between 0-15°C
+        temperature = max(15.0, min(35.0, base_temp + temp_variation))  # Clamp between 15-35°C for realistic range
         
         # Simulate realistic G-force (should normally be close to 1.0G)
         base_gforce = 1.0

@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, ListGroup } from 'react-bootstrap';
 import { useData } from '../contexts/DataContext';
 
 const Alerts = () => {
   const { alerts, loading } = useData();
+  const [lastKnownAlerts, setLastKnownAlerts] = useState([]);
+
+  // Update last known alerts when new data comes in
+  useEffect(() => {
+    if (!loading && alerts && alerts.length > 0) {
+      setLastKnownAlerts(alerts);
+    } else if (!loading && alerts && alerts.length === 0) {
+      setLastKnownAlerts([]);
+    }
+  }, [alerts, loading]);
+
+  // Use last known values when current alerts are not available during loading
+  const displayAlerts = loading ? (lastKnownAlerts.length > 0 ? lastKnownAlerts : []) : (alerts || []);
 
   const getAlertClass = (severity) => {
     switch(severity) {
@@ -19,19 +32,15 @@ const Alerts = () => {
   };
 
   return (
-    <Card>
+    <Card className={loading ? 'opacity-75' : ''}>
       <Card.Header className="d-flex justify-content-between align-items-center">
         <h5 className="mb-0">Alertas del Sistema</h5>
-        <span className="badge bg-danger">{alerts ? alerts.length : 0}</span>
+        <span className="badge bg-danger">{displayAlerts ? displayAlerts.length : 0}</span>
       </Card.Header>
       <Card.Body className="p-0">
         <ListGroup variant="flush">
-          {loading && (!alerts || alerts.length === 0) ? (
-            <ListGroup.Item className="text-center text-muted">
-              Cargando alertas...
-            </ListGroup.Item>
-          ) : alerts && alerts.length > 0 ? (
-            alerts.map(alert => (
+          {displayAlerts && displayAlerts.length > 0 ? (
+            displayAlerts.map(alert => (
               <ListGroup.Item 
                 key={alert.id} 
                 className={`${getAlertClass(alert.severity)} alert-item`}
@@ -52,7 +61,7 @@ const Alerts = () => {
             ))
           ) : (
             <ListGroup.Item className="text-center text-muted">
-              No hay alertas activas
+              {loading ? 'Cargando alertas...' : 'No hay alertas activas'}
             </ListGroup.Item>
           )}
         </ListGroup>

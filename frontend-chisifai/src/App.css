@@ -1,6 +1,34 @@
 .App {
   text-align: center;
   background-color: #d8eaf2; /* Chisifai primary color */
+  overflow: hidden; /* Prevent overscroll on the main app container */
+}
+
+/* Prevent overscroll/bounce effects on all elements */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent overscroll on the page */
+  -webkit-overflow-scrolling: touch; /* For iOS Safari */
+  overscroll-behavior: none; /* Prevents the overscroll/bounce effect */
+}
+
+/* Specific styles for the dashboard content to handle scrolling properly */
+.dashboard {
+  height: 100vh;
+  overflow: hidden; /* Prevent overscroll on dashboard */
+  overscroll-behavior: none; /* Prevents the overscroll/bounce effect */
+}
+
+/* Chisifai Color Variables */
+:root {
+  --chisifai-primary: #d8eaf2;
+  --chisifai-secondary-1: #dfaa57;
+  --chisifai-secondary-2: #224a70;
+  --chisifai-secondary-3: #f5bc4b;
+  --chisifai-dark: #1a3a5a;
+  --chisifai-light: #ebf4fa;
 }
 
 /* Chisifai Color Variables */

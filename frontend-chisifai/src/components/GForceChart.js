@@ -8,10 +8,11 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useData } from '../contexts/DataContext';
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 ChartJS.register(
   CategoryScale,
@@ -20,12 +21,14 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin
 );
 
 const GForceChart = () => {
-  const { telemetryData, loading } = useData();
+  const { gforceData, loading } = useData();
   const chartRef = useRef(null);
+  const [lastKnownData, setLastKnownData] = useState([]);
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -35,42 +38,59 @@ const GForceChart = () => {
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
         tension: 0.1,
+        fill: false,
       },
     ],
   });
 
-  // Update chart data when telemetry data changes
+  // Update last known data when gforce data changes
   useEffect(() => {
-    if (telemetryData && telemetryData.length > 0 && !loading) {
-      // Use the timestamp from the current update time
-      const currentTimestamp = new Date().toLocaleTimeString();
-      // Calculate average G-force if multiple packages exist
-      const avgGForce = telemetryData.length > 0 
-        ? telemetryData.reduce((sum, item) => sum + item.gForce, 0) / telemetryData.length
-        : 0;
+    if (gforceData && gforceData.length > 0 && !loading) {
+      setLastKnownData(gforceData);
+    }
+  }, [gforceData, loading]);
+
+  // Use last known data to draw chart even during loading
+  useEffect(() => {
+    const dataToUse = loading ? lastKnownData : gforceData;
+    
+    // Always ensure there's some data for the chart
+    if (dataToUse && dataToUse.length > 0) {
+      // Get the last 10 g-force readings
+      const recentData = dataToUse.slice(-10);
+      const labels = recentData.map(item => new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      const gforces = recentData.map(item => item.value);
       
-      // Update chart data
-      setChartData(prevData => {
-        // Only add new data point if it's different from the last one to prevent duplicates
-        if (prevData.labels.length > 0 && prevData.labels[prevData.labels.length - 1] === currentTimestamp) {
-          return prevData; // Return previous data if timestamp is the same (avoid duplicate points)
-        }
-        
-        const newLabels = [...prevData.labels.slice(-9), currentTimestamp]; // Keep last 10 points
-        const newData = [...prevData.datasets[0].data.slice(-9), avgGForce];
-        
-        return {
-          labels: newLabels,
-          datasets: [
-            {
-              ...prevData.datasets[0],
-              data: newData,
-            }
-          ]
-        };
+      setChartData({
+        labels: labels,
+        datasets: [
+          {
+            label: 'Fuerza G',
+            data: gforces,
+            borderColor: 'rgb(53, 162, 235)',
+            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            tension: 0.1,
+            fill: false,
+          }
+        ],
+      });
+    } else {
+      // Provide default "empty" chart data to avoid errors
+      setChartData({
+        labels: ['Sin datos'],
+        datasets: [
+          {
+            label: 'Fuerza G',
+            data: [null],
+            borderColor: 'rgb(200, 200, 200)',
+            backgroundColor: 'rgba(200, 200, 200, 0.5)',
+            tension: 0.1,
+            fill: false,
+          }
+        ],
       });
     }
-  }, [telemetryData, loading]);
+  }, [lastKnownData, gforceData, loading]);
 
   const options = {
     responsive: true,
@@ -80,7 +100,7 @@ const GForceChart = () => {
       },
       title: {
         display: true,
-        text: 'Fuerza G en Tiempo Real',
+        text: 'Historial de Fuerza G',
       },
     },
     scales: {
@@ -91,7 +111,31 @@ const GForceChart = () => {
         },
         min: 0,
         max: 4,
+        suggestedMax: 4,
       },
+      x: {
+        title: {
+          display: true,
+          text: 'Tiempo',
+        }
+      }
+    },
+    annotation: {
+      annotations: {
+        criticalGForce: {
+          type: 'line',
+          yMin: 2.5,
+          yMax: 2.5,
+          borderColor: 'rgb(255, 0, 0)',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          label: {
+            display: true,
+            content: 'Límite Crítico (2.5G)',
+            position: 'start',
+          }
+        }
+      }
     },
     animation: {
       duration: 300, // Animation duration in milliseconds
@@ -103,7 +147,7 @@ const GForceChart = () => {
       <Card.Header>
         <h5 className="mb-0">Seguimiento de Fuerza G</h5>
       </Card.Header>
-      <Card.Body>
+      <Card.Body style={{ height: '300px' }}>
         <Line ref={chartRef} options={options} data={chartData} />
       </Card.Body>
     </Card>

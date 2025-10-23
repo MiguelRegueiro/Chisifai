@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import './components/Dashboard.css'; // Añadir estilos del dashboard
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';

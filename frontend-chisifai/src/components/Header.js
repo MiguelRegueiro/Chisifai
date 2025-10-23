@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Image, Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
+import RefreshControl from './RefreshControl';
 
 const Header = () => {
   const location = useLocation();
@@ -44,6 +45,7 @@ const Header = () => {
             >
               Dashboard
             </Nav.Link>
+            {isActive('/dashboard') && <RefreshControl />}
           </Nav>
         </Navbar.Collapse>
       </Container>
