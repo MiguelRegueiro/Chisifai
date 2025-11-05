@@ -19,15 +19,17 @@ const Dashboard = () => {
             </Row>
             <Row>
               <Col xs={12} md={8}>
-                <TemperatureChart />
+                <Row>
+                  <Col xs={12}>
+                    <TemperatureChart />
+                  </Col>
+                  <Col xs={12}>
+                    <GForceChart />
+                  </Col>
+                </Row>
               </Col>
               <Col xs={12} md={4}>
                 <Alerts />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={12}>
-                <GForceChart />
               </Col>
             </Row>
             <Row>

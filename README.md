@@ -6,12 +6,10 @@ Chisifai es un sistema de monitoreo en tiempo real para el transporte de cheesec
 
 ## Tecnologías
 
-- **Backend**: FastAPI (Python) with PostgreSQL
+- **Backend**: FastAPI (Python) con SQLite
 - **Frontend**: React.js
-- **MQTT Broker**: For sensor data publishing
-- **Node-RED**: For data processing pipeline
-- **Base de datos**: PostgreSQL (with SQLite fallback for development)
-- **Puertos**: Backend (8001), Frontend (3000), Node-RED (1880)
+- **Base de datos**: SQLite (`chisifai.db`)
+- **Puertos**: Backend (8001), Frontend (3000)
 
 ## Requisitos Previos
 
@@ -37,12 +35,17 @@ cd Chisifai
 
 2. Instale las dependencias de Python:
    ```bash
-   pip install -r requirements.txt
+   pip install fastapi uvicorn pydantic sqlite3
    ```
 
 3. Inicie el servidor backend:
    ```bash
-   python -m uvicorn main:app --host 0.0.0.0 --port 8001
+   python api_server.py
+   ```
+
+4. Para poblar la base de datos con datos de ejemplo:
+   ```bash
+   python populate_database.py
    ```
 
 
@@ -77,7 +80,7 @@ cd Chisifai
 **Síntomas:** KPIs muestran "undefined" o "N/A", errores de red en la consola del navegador.
 
 **Solución:** Asegúrese de que el middleware CORS esté configurado en el backend:
-- FastAPI incluye CORS middleware en `main.py`
+- FastAPI incluye CORS middleware en `api_server.py`
 - Verifique que esté permitiendo los orígenes necesarios
 
 ### Problemas de conexión con la base de datos
@@ -85,9 +88,8 @@ cd Chisifai
 **Síntomas:** Error al almacenar telemetría, mensajes de error relacionados con la base de datos.
 
 **Solución:**
-- Verifique que el archivo `.env` tenga la configuración correcta de DATABASE_URL
-- Para desarrollo con SQLite: `DATABASE_URL=sqlite:///./chisifai.db`
-- Para producción con PostgreSQL: `DATABASE_URL=postgresql://usuario:contraseña@localhost/nombre_bd`
+- Verifique que el archivo `chisifai.db` exista en el directorio de backend
+- Confirme que el backend tenga permisos de lectura/escritura en el directorio
 
 
 ### Problemas de conexión
@@ -104,15 +106,14 @@ cd Chisifai
 ```
 Chisifai/
 ├── backend/
-│   ├── main.py                  # Servidor FastAPI principal con endpoints API
-│   ├── database.py              # Configuración de base de datos SQLAlchemy
-│   ├── models.py                # Modelos de datos Pydantic para validación
+│   ├── api_server.py            # Servidor FastAPI principal con endpoints API
+│   ├── populate_database.py     # Script para poblar la base de datos con datos de ejemplo
 │   ├── .env                     # Variables de entorno
-│   ├── telemetry_ingestor.py    # Versión Flask (anterior/alternativa sin base de datos SQL)
-│   └── requirements.txt         # Dependencias de Python
+│   └── chisifai.db              # Base de datos SQLite
 ├── frontend-chisifai/           # Aplicación React para dashboard frontend
-├── sensor_simulator/            # Simulador de sensores IoT que publica a MQTT
-├── chisifai_node_red_flow.json  # Flujo Node-RED con validación y reintento
+├── sensor_simulator/            # Simulador de sensores IoT
+├── chisifai_node_red_flow.json  # Flujo Node-RED (opcional)
+└── media/                       # Archivos multimedia
 ```
 
 ## Características
@@ -122,12 +123,28 @@ Chisifai/
 - Panel de alertas y métricas clave
 - Diseño responsive
 
-## Implementación del Capítulo 1 - "Del sensor al primer dato"
+## Funcionalidades del Backend
 
-- **Simulador de sensores**: Publicador MQTT que genera datos realistas de telemetría
-- **Flujo Node-RED**: Validación de JSON y lógica de reintento para alta disponibilidad
-- **API de ingesta**: FastAPI con integración PostgreSQL para almacenamiento persistente
-- **Resiliencia**: Sistema capaz de manejar fallos temporales sin pérdida de datos
+- `api_server.py`: Servidor API que expone endpoints para:
+  - `/api/telemetry` - Últimos datos de telemetría para todos los paquetes
+  - `/api/kpis` - Indicadores clave de desempeño
+  - `/api/alerts` - Alertas activas
+  - `/api/location` - Datos de ubicación de los paquetes
+  - `/api/temperature` - Historial de temperatura
+  - `/api/gforce` - Historial de fuerza G
+
+- `populate_database.py`: Script que:
+  - Inicializa la base de datos SQLite con las tablas necesarias
+  - Genera datos de ejemplo para visualización
+  - Inserta datos en tiempo real continuamente
+  - Limpia los datos antiguos para mantener el tamaño de la base de datos manejable
+
+## Implementación
+
+- **API Backend**: FastAPI que sirve datos desde SQLite a la interfaz
+- **Base de datos**: SQLite para almacenamiento local de telemetría y alertas
+- **Simulador de sensores**: Genera datos realistas de temperatura, fuerza G, ubicación, batería y señal
+- **Frontend React**: Dashboard interactivo con mapas y gráficos en tiempo real
 
 ## Medios y Capturas de Pantalla
 
@@ -136,12 +153,4 @@ Chisifai/
 
 *Dashboard principal mostrando métricas en tiempo real*
 ![Dashboard](/media/Dashboard.png)
-
-*Flujo Node-RED para procesamiento de telemetría con validación y reintento*
-![Node-RED Flow](/media/NodeRedFlow.png)
-
-*Consulta SELECT mostrando la secuencia de eventos almacenados con timestamps correctos*
-![Consulta Base de Datos](/media/SELECTaBaseDeDatos.png)
-
-La consulta SELECT demuestra que el sistema completo está funcionando correctamente, desde la generación de datos en los sensores hasta su almacenamiento persistente en la base de datos. Se puede observar cómo los registros de telemetría se almacenan con sus respectivos timestamps ordenados cronológicamente, mostrando una secuencia de eventos con información completa como ID de paquete, temperatura, fuerza G, coordenadas GPS, nivel de batería y potencia de señal. Esto confirma que la tubería completa de sensor → MQTT → Node-RED → API → base de datos está funcionando sin pérdida de información, cumpliendo los requisitos de Chapter 1 donde cada evento es registrado con su marca de tiempo correcta.
 
